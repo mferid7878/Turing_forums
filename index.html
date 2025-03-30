@@ -1,136 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TuringForm</title>
-    <link rel="stylesheet" href="assets/css/style.css">
-    <script defer src="assets/js/script.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
-        integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-</head>
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <link rel="shortcut icon" href="assets/image/download.png" />
 
-<body>
+    <script defer src="assets/js/script.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+      integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+  </head>
+
+  <body>
     <header>
-        <h1>TuringForm</h1>
+      <h1>TuringForm</h1>
     </header>
     <div class="container">
-        <div class="sidebar">
-            <div class="elementor-menu">
-                <div class="menu-header">Elementlər</div>
-                <div class="menu-content">
-                    <div class="menu-item">
-                        <div class="menu-item-icon">
-                            <i class="fa fa-heading icon"></i>
-                        </div>
-                        Başlıq
-                    </div>
-                    <div class="menu-item">
-                        <div class="menu-item-icon">
-                            <i class="fa fa-envelope icon"></i>
-                        </div>
-                        Email
-                    </div>
-                    <div class="menu-item">
-                        <div class="menu-item-icon">
-                            <i class="fa fa-phone icon"></i>
-                        </div>
-                        Nömrə
-                    </div>
-                    <div class="menu-item">
-                        <div class="menu-item-icon">
-                            <i class="fa fa-clock icon"></i>
-                        </div>
-                        Vaxt
-                    </div>
-                    <div class="menu-item">
-                        <div class="menu-item-icon">
-                            <i class="fa fa-align-left icon"></i>
-                        </div>
-                        Qısa mətn
-                    </div>
-                    <div class="menu-item">
-                        <div class="menu-item-icon">
-                            <i class="fa fa-align-justify icon"></i>
-                        </div>
-                        Uzun mətn
-                    </div>
-                    <div class="menu-item">
-                        <div class="menu-item-icon">
-                            <i class="fa fa-user-cog icon"></i>
-                        </div>
-                        Təyinat
-                    </div>
-                    <div class="menu-item">
-                        <div class="menu-item-icon">
-                            <i class="fa fa-check-circle icon"></i>
-                        </div>
-                        Tək seçim
-                    </div>
-                    <div class="menu-item">
-                        <div class="menu-item-icon">
-                            <i class="fa fa-check-square icon"></i>
-                        </div>
-                        Çoxlu seçim
-                    </div>
-                    <div class="menu-item">
-                        <div class="menu-item-icon">
-                            <i class="fa fa-calendar icon"></i>
-                        </div>
-                        Təqdim dayməsi
-                    </div>
-                </div>
+      <div class="sidebar">
+        <div class="elementor-menu">
+          <div class="menu-header">Elementlər</div>
+          <div class="menu-content">
+            <div class="menu-item">
+              <div class="menu-item-icon">
+                <i class="fa fa-heading icon"></i>
+              </div>
+              Başlıq
             </div>
+            <div class="menu-item">
+              <div class="menu-item-icon">
+                <i class="fa fa-envelope icon"></i>
+              </div>
+              Email
+            </div>
+            <div class="menu-item">
+              <div class="menu-item-icon">
+                <i class="fa fa-phone icon"></i>
+              </div>
+              Nömrə
+            </div>
+            <div class="menu-item">
+              <div class="menu-item-icon">
+                <i class="fa fa-clock icon"></i>
+              </div>
+              Vaxt
+            </div>
+            <div class="menu-item">
+              <div class="menu-item-icon">
+                <i class="fa fa-align-left icon"></i>
+              </div>
+              Qısa mətn
+            </div>
+            <div class="menu-item">
+              <div class="menu-item-icon">
+                <i class="fa fa-align-justify icon"></i>
+              </div>
+              Uzun mətn
+            </div>
+            <div class="menu-item">
+              <div class="menu-item-icon">
+                <i class="fa fa-user-cog icon"></i>
+              </div>
+              Təyinat
+            </div>
+            <div class="menu-item">
+              <div class="menu-item-icon">
+                <i class="fa fa-check-circle icon"></i>
+              </div>
+              Tək seçim
+            </div>
+            <div class="menu-item">
+              <div class="menu-item-icon">
+                <i class="fa fa-check-square icon"></i>
+              </div>
+              Çoxlu seçim
+            </div>
+            <div class="menu-item">
+              <div class="menu-item-icon">
+                <i class="fa fa-calendar icon"></i>
+              </div>
+
+              Təqdim dayməsi
+            </div>
+          </div>
         </div>
+      </div>
 
-        <div class="form-container">
-
-            <h2>My Form</h2>
-            <form class="form">
-
-                <div class="card form-group">
-                    <label for="firstName">Ad:</label>
-                    <input type="text" id="firstName" name="firstName" required>
-                </div>
-
-                <div class="card form-group">
-                    <label for="lastName">Soyad:</label>
-                    <input type="text" id="lastName" name="lastName" required>
-                </div>
-
-                <div class="card form-group">
-                    <label for="fatherName">Ata adı:</label>
-                    <input type="text" id="fatherName" name="fatherName">
-                </div>
-
-                <div class="card form-group">
-                    <label for="birthDate">Doğum tarixi:</label>
-                    <input type="date" id="birthDate" name="birthDate">
-                </div>
-
-                <div class="card form-group">
-                    <label for="phone">Telefon nömrəsi:</label>
-                    <input type="tel" id="phone" name="phone">
-                </div>
-
-                <div class="card form-group">
-                    <label for="address">Ünvan:</label>
-                    <textarea id="address" name="address"></textarea>
-                </div>
-
-                <div class="card form-group">
-                    <label for="comments">Qeydlər:</label>
-                    <textarea id="comments" name="comments"></textarea>
-                </div>
-
-                <div class=" form-group submit">
-                    <button type="submit">Məlumatı etibar et</button>
-                </div>
-            </form>
-        </div>
+      <div class="form-container">
+        <h2>My Form</h2>
+        <form class="form"></form>
+      </div>
     </div>
-</body>
-
+  </body>
 </html>
