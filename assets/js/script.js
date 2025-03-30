@@ -19,13 +19,11 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!form.querySelector('.submit')) {
             const submitGroup = document.createElement('div');
             submitGroup.className = 'form-group submit';
-            submitGroup.innerHTML = `
-                <button type="submit" class="submit-btn">Göndər</button>
-            `;
+            
             form.appendChild(submitGroup);
         }
 
-        // Add event listener to the form submission
+        // Add even  t listener to the form submission
         if (form) {
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
