@@ -183,51 +183,58 @@ document.addEventListener('DOMContentLoaded', function() {
     function createFormElement(elementType) {
         const elementDiv = document.createElement('div');
         elementDiv.className = 'card form-group';
-        
+
         // Add remove button
         const removeBtn = document.createElement('button');
         removeBtn.className = 'remove-element';
         removeBtn.innerHTML = '<i class="fa fa-times"></i>';
         removeBtn.type = 'button';
         elementDiv.appendChild(removeBtn);
-        
+
         // Create different elements based on type
-        switch(elementType.toLowerCase()) {
-            case 'başlıq': 
+        let inputElement = null;
+        switch (elementType.toLowerCase()) {
+            case 'başlıq':
                 elementDiv.innerHTML += `
                     <label for="heading-${Date.now()}" class="editable-label">Başlıq:</label>
                     <input type="text" id="heading-${Date.now()}" name="heading" placeholder="Başlıq daxil edin">
                 `;
+                inputElement = elementDiv.querySelector('input');
                 break;
             case 'email':
                 elementDiv.innerHTML += `
                     <label for="email-${Date.now()}" class="editable-label">Email:</label>
                     <input type="email" id="email-${Date.now()}" name="email" placeholder="Email daxil edin">
                 `;
+                inputElement = elementDiv.querySelector('input');
                 break;
             case 'nömrə':
                 elementDiv.innerHTML += `
                     <label for="phone-${Date.now()}" class="editable-label">Telefon nömrəsi:</label>
                     <input type="tel" id="phone-${Date.now()}" name="phone" placeholder="+994xxxxxxxx">
                 `;
+                inputElement = elementDiv.querySelector('input');
                 break;
             case 'vaxt':
                 elementDiv.innerHTML += `
                     <label for="time-${Date.now()}" class="editable-label">Vaxt:</label>
                     <input type="time" id="time-${Date.now()}" name="time">
                 `;
+                inputElement = elementDiv.querySelector('input');
                 break;
             case 'qısa mətn':
                 elementDiv.innerHTML += `
                     <label for="short-text-${Date.now()}" class="editable-label">Qısa mətn:</label>
                     <input type="text" id="short-text-${Date.now()}" name="shortText">
                 `;
+                inputElement = elementDiv.querySelector('input');
                 break;
             case 'uzun mətn':
                 elementDiv.innerHTML += `
                     <label for="long-text-${Date.now()}" class="editable-label">Uzun mətn:</label>
                     <textarea id="long-text-${Date.now()}" name="longText" rows="4"></textarea>
                 `;
+                inputElement = elementDiv.querySelector('textarea');
                 break;
             case 'təyinat':
                 elementDiv.innerHTML += `
@@ -239,55 +246,57 @@ document.addEventListener('DOMContentLoaded', function() {
                         <option value="option3">Seçim 3</option>
                     </select>
                 `;
-                break;
-            case 'tək seçim':
-                elementDiv.innerHTML += `
-                    <fieldset>
-                        <legend class="editable-label">Tək seçim:</legend>
-                        <div>
-                            <input type="radio" id="option1-${Date.now()}" name="singleChoice" value="option1">
-                            <label for="option1-${Date.now()}">Seçim 1</label>
-                        </div>
-                        <div>
-                            <input type="radio" id="option2-${Date.now()}" name="singleChoice" value="option2">
-                            <label for="option2-${Date.now()}">Seçim 2</label>
-                        </div>
-                        <div>
-                            <input type="radio" id="option3-${Date.now()}" name="singleChoice" value="option3">
-                            <label for="option3-${Date.now()}">Seçim 3</label>
-                        </div>
-                    </fieldset>
-                `;
-                break;
-            case 'çoxlu seçim':
-                elementDiv.innerHTML += `
-                    <fieldset>
-                        <legend class="editable-label">Çoxlu seçim:</legend>
-                        <div>
-                            <input type="checkbox" id="option1-${Date.now()}" name="multipleChoice" value="option1">
-                            <label for="option1-${Date.now()}">Seçim 1</label>
-                        </div>
-                        <div>
-                            <input type="checkbox" id="option2-${Date.now()}" name="multipleChoice" value="option2">
-                            <label for="option2-${Date.now()}">Seçim 2</label>
-                        </div>
-                        <div>
-                            <input type="checkbox" id="option3-${Date.now()}" name="multipleChoice" value="option3">
-                            <label for="option3-${Date.now()}">Seçim 3</label>
-                        </div>
-                    </fieldset>
-                `;
-                break;
-            case 'tarix':
-                elementDiv.innerHTML += `
-                    <label for="date-${Date.now()}" class="editable-label">Təqdimetmə tarixi:</label>
-                    <input type="date" id="date-${Date.now()}" name="date">
-                `;
+                inputElement = elementDiv.querySelector('select');
                 break;
             default:
                 return null;
         }
-        
+
+        // Add required toggle button
+        if (inputElement) {
+            // Create a container for the toggle switch
+            const toggleContainer = document.createElement('div');
+            toggleContainer.style.display = 'flex';
+            toggleContainer.style.alignItems = 'center';
+            toggleContainer.style.marginTop = '10px';
+
+            // Create the label for the toggle switch
+            const toggleLabel = document.createElement('label');
+            toggleLabel.textContent = 'Tələb olunur';
+            toggleLabel.style.marginRight = '10px';
+            toggleLabel.style.fontSize = '14px';
+
+            // Create the toggle switch
+            const toggleSwitch = document.createElement('label');
+            toggleSwitch.className = 'switch';
+
+            const toggleInput = document.createElement('input');
+            toggleInput.type = 'checkbox';
+
+            const toggleSlider = document.createElement('span');
+            toggleSlider.className = 'slider round';
+
+            // Append input and slider to the switch
+            toggleSwitch.appendChild(toggleInput);
+            toggleSwitch.appendChild(toggleSlider);
+
+            // Append label and switch to the container
+            toggleContainer.appendChild(toggleLabel);
+            toggleContainer.appendChild(toggleSwitch);
+
+            // Add event listener to toggle the required attribute
+            toggleInput.addEventListener('change', () => {
+                if (toggleInput.checked) {
+                    inputElement.required = true;
+                } else {
+                    inputElement.required = false;
+                }
+            });
+
+            // Append the toggle container to the elementDiv
+            elementDiv.appendChild(toggleContainer);
+        }
+
         return elementDiv;
     }
 
@@ -514,93 +523,101 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function submitForm() {
         // Collect form data
-        const formData = new FormData(form);
-        const formDataObj = {};
-        
-        // Process regular form elements
-        for (const [key, value] of formData.entries()) {
-            // Handle checkbox groups (multiple values with same name)
-            if (formDataObj[key] !== undefined && form.querySelector(`input[type="checkbox"][name="${key}"]`)) {
-                if (!Array.isArray(formDataObj[key])) {
-                    formDataObj[key] = [formDataObj[key]];
-                }
-                formDataObj[key].push(value);
-            } else {
-                formDataObj[key] = value;
-            }
-        }
-        
-        // Handle checkboxes that aren't checked (not included in FormData)
-        const checkboxGroups = {};
-        form.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-            if (!checkboxGroups[checkbox.name]) {
-                checkboxGroups[checkbox.name] = [];
-            }
-            
-            if (checkbox.checked) {
-                checkboxGroups[checkbox.name].push(checkbox.value);
+        const fields = [];
+
+        // Process form elements
+        form.querySelectorAll('.form-group:not(.submit)').forEach((group, index) => {
+            const input = group.querySelector('input, textarea, select');
+            if (input) {
+                fields.push({
+                    id: index + 1, // Generate a unique ID for each field
+                    label: group.querySelector('label')?.textContent.trim() || 'Unknown',
+                    type: input.type || 'string',
+                    required: input.required || false
+                });
             }
         });
-        
-        // Add checkbox groups to formDataObj
-        for (const [name, values] of Object.entries(checkboxGroups)) {
-            formDataObj[name] = values;
-        }
-        
-        // Convert the form data object to JSON string
-        const jsonData = JSON.stringify(formDataObj);
-        console.log('Form data JSON:', jsonData);
-        
+
+        // Prepare the payload
+        const payload = {
+            title: form.querySelector('input[name="title"]')?.value || 'Untitled',
+            description: form.querySelector('textarea[name="description"]')?.value || 'No description',
+            deadline: form.querySelector('input[name="deadline"]')?.value || '',
+            fields: fields
+        };
+
+        console.log('Payload:', payload);
+
         // Show loading state
         const submitBtn = form.querySelector('button[type="submit"], .submit button');
         if (submitBtn) {
             const originalText = submitBtn.textContent;
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Göndərilir...';
-            
-            // Simulate form submission (replace with actual API call)
-            setTimeout(() => {
+
+            // Send data to API
+            fetch('localhost:8083//api/v1/form', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Success:', data);
+
                 // Reset form after successful submission
                 form.reset();
-                
+
                 // Show success message
                 showMessage('Məlumat uğurla göndərildi!', 'success');
-                
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showMessage('Məlumat göndərilərkən xəta baş verdi!', 'error');
+            })
+            .finally(() => {
                 // Reset button
                 submitBtn.disabled = false;
                 submitBtn.textContent = originalText;
-            }, 1500);
+            });
         }
     }
 
-    function showMessage(text, type) {
-        // Remove existing messages first
-        document.querySelectorAll('.message').forEach(msg => msg.remove());
+    // function showMessage(text, type) {
+    //     // Remove existing messages first
+    //     document.querySelectorAll('.message').forEach(msg => msg.remove());
         
-        const messageDiv = document.createElement('div');
-        messageDiv.className = `message ${type}`;
-        messageDiv.textContent = text;
-        messageDiv.style.padding = '15px';
-        messageDiv.style.margin = '15px 0';
-        messageDiv.style.borderRadius = '4px';
+    //     const messageDiv = document.createElement('div');
+    //     messageDiv.className = `message ${type}`;
+    //     messageDiv.textContent = text;
+    //     messageDiv.style.padding = '15px';
+    //     messageDiv.style.margin = '15px 0';
+    //     messageDiv.style.borderRadius = '4px';
         
-        if (type === 'success') {
-            messageDiv.style.backgroundColor = '#d4edda';
-            messageDiv.style.color = '#155724';
-            messageDiv.style.border = '1px solid #c3e6cb';
-        } else {
-            messageDiv.style.backgroundColor = '#f8d7da';
-            messageDiv.style.color = '#721c24';
-            messageDiv.style.border = '1px solid #f5c6cb';
-        }
+    //     if (type === 'success') {
+    //         messageDiv.style.backgroundColor = '#d4edda';
+    //         messageDiv.style.color = '#155724';
+    //         messageDiv.style.border = '1px solid #c3e6cb';
+    //     } else {
+    //         messageDiv.style.backgroundColor = '#f8d7da';
+    //         messageDiv.style.color = '#721c24';
+    //         messageDiv.style.border = '1px solid #f5c6cb';
+    //     }
         
-        form.parentNode.insertBefore(messageDiv, form);
+    //     form.parentNode.insertBefore(messageDiv, form);
         
-        // Remove message after 5 seconds
-        setTimeout(() => {
-            messageDiv.remove();
-        }, 5000);
-    }
+    //     // Remove message after 5 seconds
+    //     setTimeout(() => {
+    //         messageDiv.remove();
+    //     }, 5000);
+    // }
 
     // Make form elements sortable
     makeSortable();
