@@ -11,6 +11,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize form
     initForm();
 
+    // Add click handlers to menu items
+    setupMenuItemsClickHandlers();
+    
     // Setup drag and drop for menu items
     setupDragAndDrop();
 
@@ -19,12 +22,39 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!form.querySelector('.submit')) {
             const submitGroup = document.createElement('div');
             submitGroup.className = 'form-group submit';
-
+    
             const submitButton = document.createElement('button');
             submitButton.type = 'button';
             submitButton.textContent = 'Submit';
             submitButton.onclick = submitForm; // Attach the submitForm function
 
+            
+             if (document.getElementById('dynamic-form-styles')) return;
+    
+    const styleElement = document.createElement('style');
+    styleElement.id = 'dynamic-form-styles';
+    styleElement.textContent = `
+        // Existing styles...
+        
+        .submit button {
+            background-color: #FF4500;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+        
+        // Make sure the submit form-group doesn't have a white background
+        .form-group.submit {
+            background: transparent;
+            border: none;
+            padding: 0;
+        }
+    `;
+    
+    document.head.appendChild(styleElement);
+    
             submitGroup.appendChild(submitButton);
             form.appendChild(submitGroup);
         }
@@ -53,60 +83,20 @@ document.addEventListener('DOMContentLoaded', function() {
         setupPhoneInputs();
     }
 
-    
-    // Function to restrict phone input to only numbers and plus sign
-    function setupPhoneInputs() {
-        const phoneInputs = document.querySelectorAll('input[type="tel"]');
+    function setupMenuItemsClickHandlers() {
+        const menuItems = document.querySelectorAll('.menu-item');
         
-        phoneInputs.forEach(input => {
+        menuItems.forEach(item => {
             // Skip if already set up
-            if (input.dataset.phoneSetup) return;
-            input.dataset.phoneSetup = "true";
+            if (item.dataset.clickInitialized) return;
+            item.dataset.clickInitialized = "true";
             
-            // Add input event for real-time validation
-            input.addEventListener('input', function(e) {
-                // Keep only numbers and + sign
-                this.value = this.value.replace(/[^\d+]/g, '');
-                
-                // Ensure + is only at the beginning
-                if (this.value.indexOf('+') > 0) {
-                    this.value = this.value.replace(/\+/g, '');
-                    this.value = '+' + this.value;
-                }
-                
-                // Restrict multiple + signs
-                const plusCount = (this.value.match(/\+/g) || []).length;
-                if (plusCount > 1) {
-                    this.value = this.value.replace(/\+/g, '');
-                    this.value = '+' + this.value;
-                }
-            });
-            
-            // Add keydown event to prevent typing invalid characters
-            input.addEventListener('keydown', function(e) {
-                // Allow: backspace, delete, tab, escape, enter
-                if ([46, 8, 9, 27, 13].indexOf(e.keyCode) !== -1 ||
-                    // Allow: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
-                    (e.keyCode === 65 && e.ctrlKey === true) ||
-                    (e.keyCode === 67 && e.ctrlKey === true) ||
-                    (e.keyCode === 86 && e.ctrlKey === true) ||
-                    (e.keyCode === 88 && e.ctrlKey === true) ||
-                    // Allow: home, end, left, right
-                    (e.keyCode >= 35 && e.keyCode <= 39) ||
-                    // Allow plus sign
-                    e.key === '+') {
-                    return;
-                }
-                
-                // Ensure that it is a number and stop the keypress if not
-                if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && 
-                    (e.keyCode < 96 || e.keyCode > 105)) {
-                    e.preventDefault();
-                }
+            item.addEventListener('click', function() {
+                addFormElement(item.textContent.trim());
             });
         });
     }
-
+    
     function setupDragAndDrop() {
         const menuItems = document.querySelectorAll('.menu-item');
         
@@ -184,6 +174,9 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Add sort handles
             addSortHandles(newElement);
+            
+            // Make labels editable
+            makeLabelsEditable(newElement);
         }
     }
 
@@ -202,43 +195,43 @@ document.addEventListener('DOMContentLoaded', function() {
         switch(elementType.toLowerCase()) {
             case 'başlıq': 
                 elementDiv.innerHTML += `
-                    <label for="heading-${Date.now()}">Başlıq:</label>
+                    <label for="heading-${Date.now()}" class="editable-label">Başlıq:</label>
                     <input type="text" id="heading-${Date.now()}" name="heading" placeholder="Başlıq daxil edin">
                 `;
                 break;
             case 'email':
                 elementDiv.innerHTML += `
-                    <label for="email-${Date.now()}">Email:</label>
+                    <label for="email-${Date.now()}" class="editable-label">Email:</label>
                     <input type="email" id="email-${Date.now()}" name="email" placeholder="Email daxil edin">
                 `;
                 break;
             case 'nömrə':
                 elementDiv.innerHTML += `
-                    <label for="phone-${Date.now()}">Telefon nömrəsi:</label>
+                    <label for="phone-${Date.now()}" class="editable-label">Telefon nömrəsi:</label>
                     <input type="tel" id="phone-${Date.now()}" name="phone" placeholder="+994xxxxxxxx">
                 `;
                 break;
             case 'vaxt':
                 elementDiv.innerHTML += `
-                    <label for="time-${Date.now()}">Vaxt:</label>
+                    <label for="time-${Date.now()}" class="editable-label">Vaxt:</label>
                     <input type="time" id="time-${Date.now()}" name="time">
                 `;
                 break;
             case 'qısa mətn':
                 elementDiv.innerHTML += `
-                    <label for="short-text-${Date.now()}">Qısa mətn:</label>
+                    <label for="short-text-${Date.now()}" class="editable-label">Qısa mətn:</label>
                     <input type="text" id="short-text-${Date.now()}" name="shortText">
                 `;
                 break;
             case 'uzun mətn':
                 elementDiv.innerHTML += `
-                    <label for="long-text-${Date.now()}">Uzun mətn:</label>
+                    <label for="long-text-${Date.now()}" class="editable-label">Uzun mətn:</label>
                     <textarea id="long-text-${Date.now()}" name="longText" rows="4"></textarea>
                 `;
                 break;
             case 'təyinat':
                 elementDiv.innerHTML += `
-                    <label for="assignment-${Date.now()}">Təyinat:</label>
+                    <label for="assignment-${Date.now()}" class="editable-label">Təyinat:</label>
                     <select id="assignment-${Date.now()}" name="assignment">
                         <option value="">Seçin</option>
                         <option value="option1">Seçim 1</option>
@@ -250,7 +243,7 @@ document.addEventListener('DOMContentLoaded', function() {
             case 'tək seçim':
                 elementDiv.innerHTML += `
                     <fieldset>
-                        <legend>Tək seçim:</legend>
+                        <legend class="editable-label">Tək seçim:</legend>
                         <div>
                             <input type="radio" id="option1-${Date.now()}" name="singleChoice" value="option1">
                             <label for="option1-${Date.now()}">Seçim 1</label>
@@ -269,7 +262,7 @@ document.addEventListener('DOMContentLoaded', function() {
             case 'çoxlu seçim':
                 elementDiv.innerHTML += `
                     <fieldset>
-                        <legend>Çoxlu seçim:</legend>
+                        <legend class="editable-label">Çoxlu seçim:</legend>
                         <div>
                             <input type="checkbox" id="option1-${Date.now()}" name="multipleChoice" value="option1">
                             <label for="option1-${Date.now()}">Seçim 1</label>
@@ -285,9 +278,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     </fieldset>
                 `;
                 break;
-            case 'təqdim dayməsi':
+            case 'tarix':
                 elementDiv.innerHTML += `
-                    <label for="date-${Date.now()}">Təqdim tarixi:</label>
+                    <label for="date-${Date.now()}" class="editable-label">Təqdimetmə tarixi:</label>
                     <input type="date" id="date-${Date.now()}" name="date">
                 `;
                 break;
@@ -296,6 +289,93 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         return elementDiv;
+    }
+
+    function makeLabelsEditable(element) {
+        const labels = element.querySelectorAll('.editable-label, legend.editable-label');
+        
+        labels.forEach(label => {
+            // Skip if already made editable
+            if (label.dataset.editable) return;
+            label.dataset.editable = "true";
+            
+            // Add editable indicator
+            label.style.cursor = 'pointer';
+            
+            // Add tooltip
+            label.title = 'Başlığı dəyişmək üçün klikləyin';
+            
+            // Add event listener for click
+            label.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Don't proceed if we're already editing
+                if (label.querySelector('.edit-label-input')) return;
+                
+                // Create editable input
+                const originalText = label.innerText || label.textContent;
+                const inputField = document.createElement('input');
+                inputField.type = 'text';
+                inputField.value = originalText;
+                inputField.style.width = '100%';
+                inputField.style.marginBottom = '5px';
+                inputField.className = 'edit-label-input';
+                
+                // Save the current content for restoration if needed
+                const savedContent = label.innerHTML;
+                
+                // Replace label content with input
+                label.innerHTML = '';
+                label.appendChild(inputField);
+                
+                // Focus the input
+                inputField.focus();
+                inputField.select();
+                
+                function finishEditing() {
+                    if (!inputField.parentNode) return; // Already removed
+                    
+                    const newText = inputField.value.trim() || originalText;
+                    
+                    // For legends and other elements that might have child elements,
+                    // we need to be careful how we restore the content
+                    if (label.tagName.toLowerCase() === 'legend') {
+                        label.innerHTML = newText;
+                    } else {
+                        label.textContent = newText;
+                    }
+                    
+                    // Store original for reference
+                    label.dataset.originalText = originalText;
+                    
+                    // Remove the input event listener to prevent memory leaks
+                    inputField.removeEventListener('blur', finishEditing);
+                    inputField.removeEventListener('keydown', handleKeydown);
+                }
+                
+                function handleKeydown(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        finishEditing();
+                    } else if (e.key === 'Escape') {
+                        e.preventDefault();
+                        // Restore original content
+                        label.innerHTML = savedContent;
+                        
+                        // Remove event listeners
+                        inputField.removeEventListener('blur', finishEditing);
+                        inputField.removeEventListener('keydown', handleKeydown);
+                    }
+                }
+                
+                // Handle input blur (finish editing)
+                inputField.addEventListener('blur', finishEditing);
+                
+                // Handle Enter key and Escape key
+                inputField.addEventListener('keydown', handleKeydown);
+            });
+        });
     }
 
     function removeFormElement(element) {
@@ -368,6 +448,59 @@ document.addEventListener('DOMContentLoaded', function() {
         return isValid;
     }
 
+    // Function to restrict phone input to only numbers and plus sign
+    function setupPhoneInputs() {
+        const phoneInputs = document.querySelectorAll('input[type="tel"]');
+        
+        phoneInputs.forEach(input => {
+            // Skip if already set up
+            if (input.dataset.phoneSetup) return;
+            input.dataset.phoneSetup = "true";
+            
+            // Add input event for real-time validation
+            input.addEventListener('input', function(e) {
+                // Keep only numbers and + sign
+                this.value = this.value.replace(/[^\d+]/g, '');
+                
+                // Ensure + is only at the beginning
+                if (this.value.indexOf('+') > 0) {
+                    this.value = this.value.replace(/\+/g, '');
+                    this.value = '+' + this.value;
+                }
+                
+                // Restrict multiple + signs
+                const plusCount = (this.value.match(/\+/g) || []).length;
+                if (plusCount > 1) {
+                    this.value = this.value.replace(/\+/g, '');
+                    this.value = '+' + this.value;
+                }
+            });
+            
+            // Add keydown event to prevent typing invalid characters
+            input.addEventListener('keydown', function(e) {
+                // Allow: backspace, delete, tab, escape, enter
+                if ([46, 8, 9, 27, 13].indexOf(e.keyCode) !== -1 ||
+                    // Allow: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+                    (e.keyCode === 65 && e.ctrlKey === true) ||
+                    (e.keyCode === 67 && e.ctrlKey === true) ||
+                    (e.keyCode === 86 && e.ctrlKey === true) ||
+                    (e.keyCode === 88 && e.ctrlKey === true) ||
+                    // Allow: home, end, left, right
+                    (e.keyCode >= 35 && e.keyCode <= 39) ||
+                    // Allow plus sign
+                    e.key === '+') {
+                    return;
+                }
+                
+                // Ensure that it is a number and stop the keypress if not
+                if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && 
+                    (e.keyCode < 96 || e.keyCode > 105)) {
+                    e.preventDefault();
+                }
+            });
+        });
+    }
+
     function validateEmail(email) {
         const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return re.test(email);
@@ -384,28 +517,60 @@ document.addEventListener('DOMContentLoaded', function() {
         const formData = new FormData(form);
         const formDataObj = {};
         
+        // Process regular form elements
         for (const [key, value] of formData.entries()) {
-            formDataObj[key] = value;
+            // Handle checkbox groups (multiple values with same name)
+            if (formDataObj[key] !== undefined && form.querySelector(`input[type="checkbox"][name="${key}"]`)) {
+                if (!Array.isArray(formDataObj[key])) {
+                    formDataObj[key] = [formDataObj[key]];
+                }
+                formDataObj[key].push(value);
+            } else {
+                formDataObj[key] = value;
+            }
         }
         
-        // Show loading state
-        const submitBtn = form.querySelector('button[type="submit"]');
-        const originalText = submitBtn.textContent;
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Göndərilir...';
+        // Handle checkboxes that aren't checked (not included in FormData)
+        const checkboxGroups = {};
+        form.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            if (!checkboxGroups[checkbox.name]) {
+                checkboxGroups[checkbox.name] = [];
+            }
+            
+            if (checkbox.checked) {
+                checkboxGroups[checkbox.name].push(checkbox.value);
+            }
+        });
         
-        // Simulate form submission (replace with actual API call)
-        setTimeout(() => {
-            // Reset form after successful submission
-            form.reset();
+        // Add checkbox groups to formDataObj
+        for (const [name, values] of Object.entries(checkboxGroups)) {
+            formDataObj[name] = values;
+        }
+        
+        // Convert the form data object to JSON string
+        const jsonData = JSON.stringify(formDataObj);
+        console.log('Form data JSON:', jsonData);
+        
+        // Show loading state
+        const submitBtn = form.querySelector('button[type="submit"], .submit button');
+        if (submitBtn) {
+            const originalText = submitBtn.textContent;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Göndərilir...';
             
-            // Show success message
-            showMessage('Məlumat uğurla göndərildi!', 'success');
-            
-            // Reset button
-            submitBtn.disabled = false;
-            submitBtn.textContent = originalText;
-        }, 1500);
+            // Simulate form submission (replace with actual API call)
+            setTimeout(() => {
+                // Reset form after successful submission
+                form.reset();
+                
+                // Show success message
+                showMessage('Məlumat uğurla göndərildi!', 'success');
+                
+                // Reset button
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+            }, 1500);
+        }
     }
 
     function showMessage(text, type) {
@@ -530,246 +695,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }, { offset: Number.NEGATIVE_INFINITY }).element;
     }
 
-    // Add functionality to save and load form templates
-    // addTemplateManagement();
-
-    // function addTemplateManagement() {
-    //     // Check if template controls already exist to avoid duplicates
-    //     if (document.querySelector('.template-controls')) return;
-        
-    //     // Add template management buttons
-    //     const templateControls = document.createElement('div');
-    //     templateControls.className = 'template-controls';
-    //     templateControls.style.marginBottom = '20px';
-    //     templateControls.style.display = 'flex';
-    //     templateControls.style.gap = '10px';
-    //     templateControls.style.justifyContent = 'center';
-        
-    //     const saveBtn = document.createElement('button');
-    //     saveBtn.textContent = 'Şablonu yadda saxla';
-    //     saveBtn.className = 'template-btn save';
-    //     saveBtn.style.padding = '8px 16px';
-    //     saveBtn.style.borderRadius = '4px';
-    //     saveBtn.style.backgroundColor = '#4CAF50';
-    //     saveBtn.style.color = 'white';
-    //     saveBtn.style.border = 'none';
-    //     saveBtn.style.cursor = 'pointer';
-        
-    //     const loadBtn = document.createElement('button');
-    //     loadBtn.textContent = 'Şablonu yüklə';
-    //     loadBtn.className = 'template-btn load';
-    //     loadBtn.style.padding = '8px 16px';
-    //     loadBtn.style.borderRadius = '4px';
-    //     loadBtn.style.backgroundColor = '#2196F3';
-    //     loadBtn.style.color = 'white';
-    //     loadBtn.style.border = 'none';
-    //     loadBtn.style.cursor = 'pointer';
-        
-    //     templateControls.appendChild(saveBtn);
-    //     templateControls.appendChild(loadBtn);
-        
-    //     if (formContainer) {
-    //         // Insert after the form title
-    //         const formTitle = formContainer.querySelector('h2');
-    //         if (formTitle) {
-    //             formTitle.after(templateControls);
-    //         } else {
-    //             formContainer.insertBefore(templateControls, form);
-    //         }
-    //     }
-        
-    //     // Add event listeners
-    //     saveBtn.addEventListener('click', saveTemplate);
-    //     loadBtn.addEventListener('click', loadTemplate);
-    // }
-
-    // function saveTemplate() {
-    //     const formStructure = [];
-        
-    //     document.querySelectorAll('.form-group:not(.submit)').forEach(group => {
-    //         const input = group.querySelector('input, textarea, select');
-    //         if (input) {
-    //             formStructure.push({
-    //                 type: input.type || 'textarea',
-    //                 label: group.querySelector('label')?.textContent || '',
-    //                 required: input.hasAttribute('required'),
-    //                 placeholder: input.placeholder || '',
-    //                 name: input.name || '',
-    //                 id: input.id || ''
-    //             });
-    //         }
-    //     });
-        
-    //     if (formStructure.length > 0) {
-    //         // In a real app, you might save this to a server
-    //         // For this demo, we'll save to localStorage
-    //         localStorage.setItem('turingFormTemplate', JSON.stringify(formStructure));
-    //         showMessage('Şablon uğurla yadda saxlanıldı!', 'success');
-    //     } else {
-    //         showMessage('Yadda saxlamaq üçün form elementləri əlavə edin!', 'error');
-    //     }
-    // }
-
-    // function loadTemplate() {
-    //     const savedTemplate = localStorage.getItem('turingFormTemplate');
-        
-    //     if (savedTemplate) {
-    //         try {
-    //             const formStructure = JSON.parse(savedTemplate);
-                
-    //             // Clear current form elements
-    //             document.querySelectorAll('.form-group:not(.submit)').forEach(el => el.remove());
-                
-    //             // Rebuild form from template
-    //             const submitBtn = form.querySelector('.submit');
-                
-    //             formStructure.forEach(item => {
-    //                 const elementDiv = document.createElement('div');
-    //                 elementDiv.className = 'card form-group';
-                    
-    //                 if (item.type === 'textarea') {
-    //                     elementDiv.innerHTML = `
-    //                         <label for="${item.id}">${item.label}</label>
-    //                         <textarea id="${item.id}" name="${item.name}" placeholder="${item.placeholder}" ${item.required ? 'required' : ''}></textarea>
-    //                     `;
-    //                 } else {
-    //                     elementDiv.innerHTML = `
-    //                         <label for="${item.id}">${item.label}</label>
-    //                         <input type="${item.type}" id="${item.id}" name="${item.name}" placeholder="${item.placeholder}" ${item.required ? 'required' : ''}>
-    //                     `;
-    //                 }
-                    
-    //                 // Add sorting and remove buttons
-    //                 addSortHandles(elementDiv);
-                    
-    //                 // Add remove button
-    //                 const removeBtn = document.createElement('button');
-    //                 removeBtn.className = 'remove-element';
-    //                 removeBtn.innerHTML = '<i class="fa fa-times"></i>';
-    //                 removeBtn.type = 'button';
-    //                 removeBtn.style.position = 'absolute';
-    //                 removeBtn.style.top = '10px';
-    //                 removeBtn.style.right = '10px';
-    //                 removeBtn.style.background = 'none';
-    //                 removeBtn.style.border = 'none';
-    //                 removeBtn.style.color = '#ff4d4d';
-    //                 removeBtn.style.cursor = 'pointer';
-                    
-    //                 elementDiv.appendChild(removeBtn);
-                    
-    //                 // Add event listener to remove button
-    //                 removeBtn.addEventListener('click', function() {
-    //                     removeFormElement(elementDiv);
-    //                 });
-                    
-    //                 form.insertBefore(elementDiv, submitBtn);
-    //             });
-                
-    //             // Setup phone inputs after loading template
-    //             setupPhoneInputs();
-                
-    //             showMessage('Şablon uğurla yükləndi!', 'success');
-    //         } catch (e) {
-    //             showMessage('Şablonu yükləmək mümkün olmadı!', 'error');
-    //             console.error('Error loading template:', e);
-    //         }
-    //     } else {
-    //         showMessage('Yüklənəcək şablon tapılmadı!', 'error');
-    //     }
-    // }
-
-    submitForm()
-    console.log('Sending data to backend:', jsonData);
-    
-    function submitForm() {
-        // Collect form data
-        const formData = new FormData(form);
-        const formDataObj = {};
-        
-        // Process regular form elements
-        for (const [key, value] of formData.entries()) {
-            // Handle checkbox groups (multiple values with same name)
-            if (formDataObj[key] !== undefined && form.querySelector(`input[type="checkbox"][name="${key}"]`)) {
-                if (!Array.isArray(formDataObj[key])) {
-                    formDataObj[key] = [formDataObj[key]];
-                }
-                formDataObj[key].push(value);
-            } else {
-                formDataObj[key] = value;
-            }
-        }
-        
-        // Handle checkboxes that aren't checked (not included in FormData)
-        const checkboxGroups = {};
-        form.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-            if (!checkboxGroups[checkbox.name]) {
-                checkboxGroups[checkbox.name] = [];
-            }
-            
-            if (checkbox.checked) {
-                checkboxGroups[checkbox.name].push(checkbox.value);
-            }
-        });
-        
-        // Add checkbox groups to formDataObj
-        for (const [name, values] of Object.entries(checkboxGroups)) {
-            formDataObj[name] = values;
-        }
-        
-        // Convert the form data object to JSON string
-        const jsonData = JSON.stringify(formDataObj);
-        console.log('Form data JSON:', jsonData);
-        
-        // Show loading state
-        const submitBtn = form.querySelector('button[type="submit"]');
-        const originalText = submitBtn.textContent;
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Göndərilir...';
-        
-        // Send data to back-end
-        // Replace with your actual API endpoint
-        sendToBackend(jsonData);
-    }
-    
-    function sendToBackend(jsonData) {
-        // Example using fetch API to send data to back-end
-        // Replace 'your-api-endpoint' with your actual API URL
-        fetch('your-api-endpoint', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: jsonData
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            // Success handling
-            form.reset();
-            showMessage('Məlumat uğurla göndərildi!', 'success');
-            
-            // Reset button
-            const submitBtn = form.querySelector('button[type="submit"]');
-            submitBtn.disabled = false;
-            submitBtn.textContent = submitBtn.getAttribute('data-original-text') || 'Təqdim et';
-        })
-        .catch(error => {
-            console.error('Error submitting form:', error);
-            showMessage('Xəta baş verdi! Yenidən cəhd edin.', 'error');
-            
-            // Reset button
-            const submitBtn = form.querySelector('button[type="submit"]');
-            submitBtn.disabled = false;
-            submitBtn.textContent = submitBtn.getAttribute('data-original-text') || 'Təqdim et';
-        });
-    }
-    
-
-
     // Add CSS for handling new elements
     addDynamicStyles();
 
@@ -782,6 +707,11 @@ document.addEventListener('DOMContentLoaded', function() {
         styleElement.textContent = `
             .form-group {
                 position: relative;
+                margin-bottom: 15px;
+                padding: 15px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                background-color: #fff;
             }
             
             .remove-element {
@@ -792,6 +722,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 border: none;
                 color: #ff4d4d;
                 cursor: pointer;
+                z-index: 10;
             }
             
             .dragging {
@@ -801,6 +732,8 @@ document.addEventListener('DOMContentLoaded', function() {
             
             .dragover {
                 border: 2px dashed #4CAF50;
+                padding: 20px;
+                border-radius: 8px;
             }
             
             .validation-message {
@@ -828,11 +761,51 @@ document.addEventListener('DOMContentLoaded', function() {
                 background-color: white;
             }
             
-            .template-btn:hover {
-                opacity: 0.9;
+            .editable-label {
+                position: relative;
+                font-weight: bold;
+                transition: background-color 0.2s;
+            }
+            
+            .editable-label:hover {
+                background-color: #f0f0f0;
+            }
+            
+            .editable-label:hover::after {
+                content: '✏️';
+                font-size: 12px;
+                margin-left: 5px;
+            }
+            
+            .edit-label-input {
+                font-weight: bold;
+                padding: 2px 5px;
+                border: 1px solid #ddd;
+                border-radius: 3px;
+                font-size: inherit;
+            }
+            
+            .menu-item {
+                cursor: pointer;
+                transition: background-color 0.2s;
+                padding: 10px;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+            
+            .menu-item:hover {
+                background-color: rgba(255, 255, 255, 0.1);
             }
         `;
         
         document.head.appendChild(styleElement);
+    }
+
+    // Make existing labels editable
+    makeAllLabelsEditable();
+    
+    function makeAllLabelsEditable() {
+        document.querySelectorAll('.form-group:not(.submit)').forEach(element => {
+            makeLabelsEditable(element);
+        });
     }
 });
