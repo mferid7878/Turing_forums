@@ -19,13 +19,19 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!form.querySelector('.submit')) {
             const submitGroup = document.createElement('div');
             submitGroup.className = 'form-group submit';
-            
+
+            const submitButton = document.createElement('button');
+            submitButton.type = 'button';
+            submitButton.textContent = 'Submit';
+            submitButton.onclick = submitForm; // Attach the submitForm function
+
+            submitGroup.appendChild(submitButton);
             form.appendChild(submitGroup);
         }
 
-        // Add even  t listener to the form submission
+        // Add event listener to the form submission
         if (form) {
-            form.addEventListener('submit', function(e) {
+            form.addEventListener('submit', function (e) {
                 e.preventDefault();
                 if (validateForm()) {
                     submitForm();
@@ -47,6 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
         setupPhoneInputs();
     }
 
+    
     // Function to restrict phone input to only numbers and plus sign
     function setupPhoneInputs() {
         const phoneInputs = document.querySelectorAll('input[type="tel"]');
@@ -340,7 +347,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 input.style.borderColor = 'red';
             }
         });
-        
+    
         // Validate phone format
         const phoneInputs = form.querySelectorAll('input[type="tel"]');
         phoneInputs.forEach(input => {
@@ -524,152 +531,244 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Add functionality to save and load form templates
-    addTemplateManagement();
+    // addTemplateManagement();
 
-    function addTemplateManagement() {
-        // Check if template controls already exist to avoid duplicates
-        if (document.querySelector('.template-controls')) return;
+    // function addTemplateManagement() {
+    //     // Check if template controls already exist to avoid duplicates
+    //     if (document.querySelector('.template-controls')) return;
         
-        // Add template management buttons
-        const templateControls = document.createElement('div');
-        templateControls.className = 'template-controls';
-        templateControls.style.marginBottom = '20px';
-        templateControls.style.display = 'flex';
-        templateControls.style.gap = '10px';
-        templateControls.style.justifyContent = 'center';
+    //     // Add template management buttons
+    //     const templateControls = document.createElement('div');
+    //     templateControls.className = 'template-controls';
+    //     templateControls.style.marginBottom = '20px';
+    //     templateControls.style.display = 'flex';
+    //     templateControls.style.gap = '10px';
+    //     templateControls.style.justifyContent = 'center';
         
-        const saveBtn = document.createElement('button');
-        saveBtn.textContent = 'Şablonu yadda saxla';
-        saveBtn.className = 'template-btn save';
-        saveBtn.style.padding = '8px 16px';
-        saveBtn.style.borderRadius = '4px';
-        saveBtn.style.backgroundColor = '#4CAF50';
-        saveBtn.style.color = 'white';
-        saveBtn.style.border = 'none';
-        saveBtn.style.cursor = 'pointer';
+    //     const saveBtn = document.createElement('button');
+    //     saveBtn.textContent = 'Şablonu yadda saxla';
+    //     saveBtn.className = 'template-btn save';
+    //     saveBtn.style.padding = '8px 16px';
+    //     saveBtn.style.borderRadius = '4px';
+    //     saveBtn.style.backgroundColor = '#4CAF50';
+    //     saveBtn.style.color = 'white';
+    //     saveBtn.style.border = 'none';
+    //     saveBtn.style.cursor = 'pointer';
         
-        const loadBtn = document.createElement('button');
-        loadBtn.textContent = 'Şablonu yüklə';
-        loadBtn.className = 'template-btn load';
-        loadBtn.style.padding = '8px 16px';
-        loadBtn.style.borderRadius = '4px';
-        loadBtn.style.backgroundColor = '#2196F3';
-        loadBtn.style.color = 'white';
-        loadBtn.style.border = 'none';
-        loadBtn.style.cursor = 'pointer';
+    //     const loadBtn = document.createElement('button');
+    //     loadBtn.textContent = 'Şablonu yüklə';
+    //     loadBtn.className = 'template-btn load';
+    //     loadBtn.style.padding = '8px 16px';
+    //     loadBtn.style.borderRadius = '4px';
+    //     loadBtn.style.backgroundColor = '#2196F3';
+    //     loadBtn.style.color = 'white';
+    //     loadBtn.style.border = 'none';
+    //     loadBtn.style.cursor = 'pointer';
         
-        templateControls.appendChild(saveBtn);
-        templateControls.appendChild(loadBtn);
+    //     templateControls.appendChild(saveBtn);
+    //     templateControls.appendChild(loadBtn);
         
-        if (formContainer) {
-            // Insert after the form title
-            const formTitle = formContainer.querySelector('h2');
-            if (formTitle) {
-                formTitle.after(templateControls);
+    //     if (formContainer) {
+    //         // Insert after the form title
+    //         const formTitle = formContainer.querySelector('h2');
+    //         if (formTitle) {
+    //             formTitle.after(templateControls);
+    //         } else {
+    //             formContainer.insertBefore(templateControls, form);
+    //         }
+    //     }
+        
+    //     // Add event listeners
+    //     saveBtn.addEventListener('click', saveTemplate);
+    //     loadBtn.addEventListener('click', loadTemplate);
+    // }
+
+    // function saveTemplate() {
+    //     const formStructure = [];
+        
+    //     document.querySelectorAll('.form-group:not(.submit)').forEach(group => {
+    //         const input = group.querySelector('input, textarea, select');
+    //         if (input) {
+    //             formStructure.push({
+    //                 type: input.type || 'textarea',
+    //                 label: group.querySelector('label')?.textContent || '',
+    //                 required: input.hasAttribute('required'),
+    //                 placeholder: input.placeholder || '',
+    //                 name: input.name || '',
+    //                 id: input.id || ''
+    //             });
+    //         }
+    //     });
+        
+    //     if (formStructure.length > 0) {
+    //         // In a real app, you might save this to a server
+    //         // For this demo, we'll save to localStorage
+    //         localStorage.setItem('turingFormTemplate', JSON.stringify(formStructure));
+    //         showMessage('Şablon uğurla yadda saxlanıldı!', 'success');
+    //     } else {
+    //         showMessage('Yadda saxlamaq üçün form elementləri əlavə edin!', 'error');
+    //     }
+    // }
+
+    // function loadTemplate() {
+    //     const savedTemplate = localStorage.getItem('turingFormTemplate');
+        
+    //     if (savedTemplate) {
+    //         try {
+    //             const formStructure = JSON.parse(savedTemplate);
+                
+    //             // Clear current form elements
+    //             document.querySelectorAll('.form-group:not(.submit)').forEach(el => el.remove());
+                
+    //             // Rebuild form from template
+    //             const submitBtn = form.querySelector('.submit');
+                
+    //             formStructure.forEach(item => {
+    //                 const elementDiv = document.createElement('div');
+    //                 elementDiv.className = 'card form-group';
+                    
+    //                 if (item.type === 'textarea') {
+    //                     elementDiv.innerHTML = `
+    //                         <label for="${item.id}">${item.label}</label>
+    //                         <textarea id="${item.id}" name="${item.name}" placeholder="${item.placeholder}" ${item.required ? 'required' : ''}></textarea>
+    //                     `;
+    //                 } else {
+    //                     elementDiv.innerHTML = `
+    //                         <label for="${item.id}">${item.label}</label>
+    //                         <input type="${item.type}" id="${item.id}" name="${item.name}" placeholder="${item.placeholder}" ${item.required ? 'required' : ''}>
+    //                     `;
+    //                 }
+                    
+    //                 // Add sorting and remove buttons
+    //                 addSortHandles(elementDiv);
+                    
+    //                 // Add remove button
+    //                 const removeBtn = document.createElement('button');
+    //                 removeBtn.className = 'remove-element';
+    //                 removeBtn.innerHTML = '<i class="fa fa-times"></i>';
+    //                 removeBtn.type = 'button';
+    //                 removeBtn.style.position = 'absolute';
+    //                 removeBtn.style.top = '10px';
+    //                 removeBtn.style.right = '10px';
+    //                 removeBtn.style.background = 'none';
+    //                 removeBtn.style.border = 'none';
+    //                 removeBtn.style.color = '#ff4d4d';
+    //                 removeBtn.style.cursor = 'pointer';
+                    
+    //                 elementDiv.appendChild(removeBtn);
+                    
+    //                 // Add event listener to remove button
+    //                 removeBtn.addEventListener('click', function() {
+    //                     removeFormElement(elementDiv);
+    //                 });
+                    
+    //                 form.insertBefore(elementDiv, submitBtn);
+    //             });
+                
+    //             // Setup phone inputs after loading template
+    //             setupPhoneInputs();
+                
+    //             showMessage('Şablon uğurla yükləndi!', 'success');
+    //         } catch (e) {
+    //             showMessage('Şablonu yükləmək mümkün olmadı!', 'error');
+    //             console.error('Error loading template:', e);
+    //         }
+    //     } else {
+    //         showMessage('Yüklənəcək şablon tapılmadı!', 'error');
+    //     }
+    // }
+
+    submitForm()
+    console.log('Sending data to backend:', jsonData);
+    
+    function submitForm() {
+        // Collect form data
+        const formData = new FormData(form);
+        const formDataObj = {};
+        
+        // Process regular form elements
+        for (const [key, value] of formData.entries()) {
+            // Handle checkbox groups (multiple values with same name)
+            if (formDataObj[key] !== undefined && form.querySelector(`input[type="checkbox"][name="${key}"]`)) {
+                if (!Array.isArray(formDataObj[key])) {
+                    formDataObj[key] = [formDataObj[key]];
+                }
+                formDataObj[key].push(value);
             } else {
-                formContainer.insertBefore(templateControls, form);
+                formDataObj[key] = value;
             }
         }
         
-        // Add event listeners
-        saveBtn.addEventListener('click', saveTemplate);
-        loadBtn.addEventListener('click', loadTemplate);
-    }
-
-    function saveTemplate() {
-        const formStructure = [];
-        
-        document.querySelectorAll('.form-group:not(.submit)').forEach(group => {
-            const input = group.querySelector('input, textarea, select');
-            if (input) {
-                formStructure.push({
-                    type: input.type || 'textarea',
-                    label: group.querySelector('label')?.textContent || '',
-                    required: input.hasAttribute('required'),
-                    placeholder: input.placeholder || '',
-                    name: input.name || '',
-                    id: input.id || ''
-                });
+        // Handle checkboxes that aren't checked (not included in FormData)
+        const checkboxGroups = {};
+        form.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            if (!checkboxGroups[checkbox.name]) {
+                checkboxGroups[checkbox.name] = [];
+            }
+            
+            if (checkbox.checked) {
+                checkboxGroups[checkbox.name].push(checkbox.value);
             }
         });
         
-        if (formStructure.length > 0) {
-            // In a real app, you might save this to a server
-            // For this demo, we'll save to localStorage
-            localStorage.setItem('turingFormTemplate', JSON.stringify(formStructure));
-            showMessage('Şablon uğurla yadda saxlanıldı!', 'success');
-        } else {
-            showMessage('Yadda saxlamaq üçün form elementləri əlavə edin!', 'error');
+        // Add checkbox groups to formDataObj
+        for (const [name, values] of Object.entries(checkboxGroups)) {
+            formDataObj[name] = values;
         }
-    }
-
-    function loadTemplate() {
-        const savedTemplate = localStorage.getItem('turingFormTemplate');
         
-        if (savedTemplate) {
-            try {
-                const formStructure = JSON.parse(savedTemplate);
-                
-                // Clear current form elements
-                document.querySelectorAll('.form-group:not(.submit)').forEach(el => el.remove());
-                
-                // Rebuild form from template
-                const submitBtn = form.querySelector('.submit');
-                
-                formStructure.forEach(item => {
-                    const elementDiv = document.createElement('div');
-                    elementDiv.className = 'card form-group';
-                    
-                    if (item.type === 'textarea') {
-                        elementDiv.innerHTML = `
-                            <label for="${item.id}">${item.label}</label>
-                            <textarea id="${item.id}" name="${item.name}" placeholder="${item.placeholder}" ${item.required ? 'required' : ''}></textarea>
-                        `;
-                    } else {
-                        elementDiv.innerHTML = `
-                            <label for="${item.id}">${item.label}</label>
-                            <input type="${item.type}" id="${item.id}" name="${item.name}" placeholder="${item.placeholder}" ${item.required ? 'required' : ''}>
-                        `;
-                    }
-                    
-                    // Add sorting and remove buttons
-                    addSortHandles(elementDiv);
-                    
-                    // Add remove button
-                    const removeBtn = document.createElement('button');
-                    removeBtn.className = 'remove-element';
-                    removeBtn.innerHTML = '<i class="fa fa-times"></i>';
-                    removeBtn.type = 'button';
-                    removeBtn.style.position = 'absolute';
-                    removeBtn.style.top = '10px';
-                    removeBtn.style.right = '10px';
-                    removeBtn.style.background = 'none';
-                    removeBtn.style.border = 'none';
-                    removeBtn.style.color = '#ff4d4d';
-                    removeBtn.style.cursor = 'pointer';
-                    
-                    elementDiv.appendChild(removeBtn);
-                    
-                    // Add event listener to remove button
-                    removeBtn.addEventListener('click', function() {
-                        removeFormElement(elementDiv);
-                    });
-                    
-                    form.insertBefore(elementDiv, submitBtn);
-                });
-                
-                // Setup phone inputs after loading template
-                setupPhoneInputs();
-                
-                showMessage('Şablon uğurla yükləndi!', 'success');
-            } catch (e) {
-                showMessage('Şablonu yükləmək mümkün olmadı!', 'error');
-                console.error('Error loading template:', e);
-            }
-        } else {
-            showMessage('Yüklənəcək şablon tapılmadı!', 'error');
-        }
+        // Convert the form data object to JSON string
+        const jsonData = JSON.stringify(formDataObj);
+        console.log('Form data JSON:', jsonData);
+        
+        // Show loading state
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const originalText = submitBtn.textContent;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Göndərilir...';
+        
+        // Send data to back-end
+        // Replace with your actual API endpoint
+        sendToBackend(jsonData);
     }
+    
+    function sendToBackend(jsonData) {
+        // Example using fetch API to send data to back-end
+        // Replace 'your-api-endpoint' with your actual API URL
+        fetch('your-api-endpoint', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: jsonData
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Success handling
+            form.reset();
+            showMessage('Məlumat uğurla göndərildi!', 'success');
+            
+            // Reset button
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.disabled = false;
+            submitBtn.textContent = submitBtn.getAttribute('data-original-text') || 'Təqdim et';
+        })
+        .catch(error => {
+            console.error('Error submitting form:', error);
+            showMessage('Xəta baş verdi! Yenidən cəhd edin.', 'error');
+            
+            // Reset button
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.disabled = false;
+            submitBtn.textContent = submitBtn.getAttribute('data-original-text') || 'Təqdim et';
+        });
+    }
+    
+
 
     // Add CSS for handling new elements
     addDynamicStyles();
